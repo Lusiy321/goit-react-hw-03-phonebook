@@ -7,15 +7,23 @@ import { Styles, PhonebookWrap, MainTitle, SecondaryTitle } from './Styles';
 
 export class App extends Component {
   state = {
-    contacts: [
-      { id: 'id-1', name: 'Kolya Pushka', number: '459-12-56' },
-      { id: 'id-2', name: 'Stepan Sraka', number: '443-89-12' },
-      { id: 'id-3', name: 'Vasyl Mordovorot', number: '645-17-79' },
-      { id: 'id-4', name: 'Genka Metla', number: '227-91-26' },
-      { id: 'id-5', name: 'Tolya Vantus', number: '245-21-48' },
-    ],
+    contacts: [],
     filter: '',
   };
+
+  componentDidMount(prevProps, prevState) {
+    const contacts = localStorage.getItem('contacts');
+    const parsContacts = JSON.parse(contacts);
+    if (parsContacts) {
+      this.setState({ contacts: parsContacts });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts !== this.state.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
 
   handleChange = evt => {
     this.setState({ [evt.target.name]: evt.target.value });
